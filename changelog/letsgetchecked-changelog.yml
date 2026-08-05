@@ -1,0 +1,124 @@
+generated: '2026-08-04'
+method: searched
+source: https://docs.letsgetchecked.com/documentation/release-notes/release_notes/
+url: https://docs.letsgetchecked.com/documentation/release-notes/release_notes/
+
+scheme: dated documentation release notes
+format: date-grouped table of update + affected topic
+versioned_entries: false
+versioned_entries_note: 'Entries are dated but carry no release version number. They log
+  documentation changes to the API reference rather than deployments, so an entry does not
+  always imply a contract change.'
+current_version: v2 (Orders API); v1 (Results API, Outreach API)
+most_recent_entry: '2023-09-14'
+oldest_entry_captured: '2022-02-10'
+entry_count_published: 6
+feed: none
+rss: none
+
+staleness:
+  days_since_last_entry_at_capture: ~1055
+  note: 'No release note has been published since 14 September 2023. Treat the contract as
+    unconfirmed rather than stable.'
+
+entries:
+- date: '2023-09-14'
+  breaking: false
+  highlights:
+  - Documentation added for Orders API Version 2 (PUT Order v2, GET Order v2).
+  - Documentation added for the Orders API v2 PATCH endpoint (cancel order item).
+  - GET Lab Results added to the Results API.
+  - Scope removed from the access-token request example (client_credentials without scopes).
+  - Status codes and additional responses added to GET Questionnaire; response structure
+    readability improved.
+  - GET Results Letters events added to the Outreach API.
+  - Download Results Letter added to the Outreach API.
+  - GET Results lowerBound and upperBound field types updated.
+  - Coding section added under Test Section in GET Results (LOINC codes).
+  - Updated sample examples across GET Results.
+  additions:
+  - Orders API v2
+  - PATCH order item / cancel
+  - GET Lab Results
+  - GET Results Letters events
+  - Download Results Letter
+  topics: [Order PUT V2, Order GET V2, Order Patch V2, GET Lab Results, Authentication Flow,
+    GET Questionnaire, GET Results Letters events, Download Results Letter, GET Results]
+
+- date: '2022-09-12'
+  breaking: false
+  highlights:
+  - Alaska (AK) supported on the user's state address.
+  topics: [PUT Order]
+
+- date: '2022-08-19'
+  breaking: false
+  highlights:
+  - PhysicianInfo, QuestionnaireInfo and phoneCountryCode descriptions updated.
+  - GET Results extended with a coding element returning LOINC codes for biomarkers, plus
+    LetsGetChecked Order Physician information.
+  - Hba1c upperBound values corrected in the examples.
+  - New qualitative values added to GET Results — PresumptivePositive, Equivocal,
+    PossibleCeliac, PresumptiveCeliac, NotLikelyCeliac.
+  - Outreach API query parameters, clientId descriptions and sample response updated.
+  - Payload structure examples extended with an Outreach change notification.
+  - API Notifications retry-mechanism section updated.
+  additions:
+  - LOINC coding on results
+  - Outreach change notification webhook type
+  topics: [GET Results, GET Notifications, API Notifications]
+
+- date: '2022-04-01'
+  breaking: true
+  breaking_detail: 'countryIsoAlpha2 replaces countryName in the Address structure on
+    PUT Order.'
+  highlights:
+  - customData examples updated.
+  - countryIsoAlpha2 replaces countryName; Address sample request updated.
+  - Request definitions table reordered; clientOrderId definition updated.
+  - outboundTrackingNumber and inboundTrackingNumber definitions updated.
+  - patientIdentification and QualitativeValue definitions updated.
+  - GET Results updated with a new sample response and test result examples.
+  - SampleCollected and Cancelled definitions updated.
+  - clientId description updated in GET Notifications path parameters.
+  - Webhook notification content and examples updated.
+  topics: [PUT Order, GET Order Status, GET Results, GET Results Status, GET Notifications,
+    API Notifications]
+
+- date: '2022-03-03'
+  breaking: true
+  breaking_detail: 'address/state value updated to REMOVE Alaska (AK) — later reinstated
+    on 2022-09-12.'
+  highlights:
+  - Test kit result information updated.
+  - New Glossary published.
+  - clientOrderId path-parameter description updated.
+  - PatientInfo/gender type corrected; PatientInfo/participantLanguage description updated.
+  - address/state updated to remove Alaska (AK).
+  - lgcOrderRef and clientOrderId response property descriptions updated.
+  - Results letters examples updated.
+  - Replacement orders content updated.
+  - 2xx error codes updated.
+  additions:
+  - Glossary
+  topics: [PUT Order, Glossary, Results letters, Replacement orders, Error codes]
+
+- date: '2022-02-10'
+  breaking: false
+  highlights:
+  - New section documenting the Outreach API.
+  - GET Results updated with new examples and revised qualitative values.
+  - Order status information extended with the ValidationFailed status.
+  - New customData field, and new information about rate limits, on PUT Order.
+  additions:
+  - Outreach API
+  - customData field
+  - ValidationFailed order status
+  topics: [Outreach API, GET Results, Orders API, PUT Order]
+
+notes:
+- 'Rate limits were referenced in the 2022-02-10 entry but no rate-limit values appear on
+  the current PUT Order page, so nothing is recorded in a rate-limits/ artifact.'
+- 'The Alaska (AK) state value was removed on 2022-03-03 and reinstated on 2022-09-12 —
+  two behaviour-affecting changes to an enum in six months, neither flagged as breaking by
+  the provider.'

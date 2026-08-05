@@ -1,0 +1,195 @@
+generated: '2026-08-04'
+method: searched
+source: https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/api-operations/
+docs: https://docs.letsgetchecked.com/
+
+# Cross-cutting request/response semantics for the LetsGetChecked B2B APIs, read from
+# the published documentation. There is no OpenAPI to derive from, so every entry
+# below is anchored to a docs URL.
+
+architecture:
+  style: REST over HTTPS
+  transport: HTTPS only
+  media_type: application/json
+  additional_representations:
+  - HL7 (laboratory results)
+  - PDF (laboratory results, results letters)
+  endpoint_shape: '{LGC-API}/{clientId}/api/{version}/{resource}'
+  client_scoping: 'Every path is prefixed with a clientId — a 1-to-4 character
+    alphanumeric code issued by LetsGetChecked — so tenancy is expressed in the URI
+    rather than derived from the token.'
+  host_published: false
+  host_note: 'The API host is written as the placeholder {LGC-API} in all documentation
+    and is issued privately per client, so no baseURL is recorded in apis.yml.'
+
+authentication:
+  style: OAuth 2.0 client_credentials, JWT bearer token
+  detail: authentication/letsgetchecked-authentication.yml
+
+idempotency:
+  supported: true
+  mechanism: client-supplied resource identifier on an idempotent PUT
+  key_parameter: clientOrderId
+  key_location: path
+  key_scope: per clientId
+  header: none
+  header_note: 'There is no Idempotency-Key request header. Idempotency is achieved
+    structurally: order creation is a PUT to a URI the client names, so a replay of the
+    same clientOrderId is the same request.'
+  operations:
+  - method: PUT
+    path: '{clientId}/api/v1/orders/{clientOrderId}'
+    docs: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/Version%201/orders_create/
+  - method: PUT
+    path: '{clientId}/api/v2/orders/{clientOrderId}'
+    docs: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/Version%202/orders_create/
+  documented_behaviour: 'The operation is idempotent. If the response of the operation
+    is not obtained, for example if the connection breaks, the client application can
+    retry. If the previous invocation never arrived it runs for the first time, and if
+    it ran, the previous result is returned.'
+  retention: not published
+  conflict_semantics: 'HTTP 409 is returned when the order being sent already exists —
+    see errors/letsgetchecked-problem-types.yml.'
+  consumer_side: 'Webhook delivery is at-least-once; LetsGetChecked explicitly instructs
+    clients to make their own event processing idempotent because endpoints may receive
+    the same event more than once.'
+  quote_source:
+  - https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/Version%201/orders_create/
+  - https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/event_handling/
+
+pagination:
+  style: continuation-token cursor
+  applies_to:
+  - 'GET {clientId}/api/v1/outreach'
+  request_parameter: continuationToken
+  request_parameter_in: query
+  response_header: X-Continuation-Token
+  page_size: 25
+  page_size_configurable: false
+  page_size_note: There is an upper limit of 25 results returned per request.
+  end_of_collection: X-Continuation-Token returns a null value when all results have
+    been returned.
+  event_feed_cursor:
+    applies_to:
+    - 'GET {clientId}/api/v1/letters-feed'
+    request_parameter: startEvent
+    format: '<sequence>_<eventId>, for example 638090378343289129_acddc326-866f-4081-a7cf-6e4e47376f68'
+    also_accepts: startDate
+  docs: https://docs.letsgetchecked.com/documentation/API%20Reference/Outreach%20API/notifications_get/
+
+filtering:
+  parameters:
+  - name: programName
+    in: query
+    applies_to: [outreach, letters-feed]
+  - name: startDate
+    in: query
+    format: ISO 8601 UTC date
+  - name: endDate
+    in: query
+    format: ISO 8601 UTC date
+  - name: type
+    in: query
+    values: [PcpResultsLetter, PatientResultsLetter]
+  - name: gender
+    in: query
+    applies_to: [questionnaires]
+  - name: alphaCode
+    in: query
+    applies_to: [results, labresults]
+    required: false
+  - name: fields
+    in: query
+    applies_to: [results]
+    note: 'Sparse-fieldset selector; the only documented value is fields=status, used
+      to fetch result status alone.'
+
+field_selection:
+  supported: partial
+  mechanism: 'fields query parameter on GET Results (fields=status)'
+  expansion: not supported
+
+metadata:
+  supported: true
+  field: customData
+  applies_to: PUT Order
+  note: 'A client-controlled custom-data field on order creation, added in the
+    10 February 2022 release and expanded with new examples on 1 April 2022.'
+
+identifiers:
+  client_id:
+    description: Unique client code issued by LetsGetChecked.
+    format: 1 to 4 alphanumeric characters
+  client_order_id:
+    description: Client-chosen unique order identifier; the idempotency key.
+  lgc_order_ref:
+    description: LetsGetChecked order reference.
+    format: GUID
+  order_item_id:
+    description: Per-item identifier introduced in Orders API v2.
+    format: GUID
+  barcode:
+    description: Test-kit barcode.
+    format: 'LGC-0000-0000-0000, where 0 is any digit'
+  alpha_code:
+    description: Result access code paired with a barcode.
+    format: 'AAAAAA, where A is any uppercase letter A-Z'
+  letter_id:
+    description: Results-letter identifier.
+    format: '<audience>_<barcode>, for example patient_LGC-2787-3959-3483'
+
+versioning:
+  scheme: uri-path
+  pattern: '/api/v1/, /api/v2/'
+  current: v2 (Orders API only)
+  concurrent_versions: 'Orders API v1 and v2 are both documented. Results and Outreach
+    are v1 only.'
+  unsupported_version_status: 410
+  detail: lifecycle/letsgetchecked-lifecycle.yml
+
+errors:
+  envelope: Problem Detail
+  envelope_note: 'The error-codes page states that errors "include the Problem-Detail
+    payload where appropriate". Neither the RFC number nor the
+    application/problem+json media type is stated, and no problem type URIs are
+    published, so conformance to RFC 9457/RFC 7807 cannot be confirmed from the docs.'
+  detail: errors/letsgetchecked-problem-types.yml
+
+rate_limiting:
+  published: false
+  signalling_headers: none published
+  retry_after: not documented
+  note: 'The 10 February 2022 release note says "new information about rate limits" was
+    added to PUT Order, but no rate-limit numbers, quota, or 429 response are present on
+    the current documentation. No rate-limits/ artifact is recorded because there is
+    nothing published to record.'
+
+request_tracing:
+  request_id_header: none published
+  correlation: 'Webhook payloads carry a UTC timestamp and a callbackURL that resolves
+    back to the originating resource, which is the only documented correlation
+    mechanism.'
+
+async_operations:
+  present: true
+  operations:
+  - 'PATCH {clientId}/api/v2/orders/{clientOrderId}/orderItem/{orderItemId}'
+  behaviour: 'PATCH requests are processed asynchronously; completion is confirmed by a
+    webhook notification rather than in the HTTP response.'
+
+events:
+  detail: asyncapi/letsgetchecked-notifications-webhooks.yml
+  delivery: at-least-once, unordered
+  signing: optional LGC2-HMAC-SHA256
+
+dates_and_times:
+  standard: ISO 8601, UTC
+  note: 'Query date parameters are documented with a dd/MM/yyyy sample (startDate=01/01/2000)
+    while the description asks for ISO 8601 UTC — an inconsistency in the published docs.'
+
+cross_references:
+  authentication: authentication/letsgetchecked-authentication.yml
+  errors: errors/letsgetchecked-problem-types.yml
+  lifecycle: lifecycle/letsgetchecked-lifecycle.yml
+  data_model: data-model/letsgetchecked-data-model.yml
+  vocabulary: vocabulary/letsgetchecked-glossary.yml

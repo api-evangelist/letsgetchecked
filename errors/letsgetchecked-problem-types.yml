@@ -1,0 +1,128 @@
+generated: '2026-08-04'
+method: searched
+source: https://docs.letsgetchecked.com/documentation/API%20Reference/errors/
+docs: https://docs.letsgetchecked.com/documentation/API%20Reference/errors/
+
+format: problem-detail
+format_confirmed: false
+format_note: 'The error-codes page says errors "include the Problem-Detail payload where
+  appropriate". It does not name RFC 7807 or RFC 9457, does not state the
+  application/problem+json media type, and publishes no problem type URIs or example
+  problem document. This catalogue therefore records the HTTP status contract that is
+  actually published, and the problem-detail envelope is recorded as claimed but
+  unverified. There is no machine-readable specification to derive richer types from.'
+
+envelope:
+  claimed: Problem Detail
+  media_type: not published
+  type_uris: not published
+  fields: not published
+
+classes:
+- class: 2xx
+  meaning: Successful
+  description: Indicates success.
+- class: 3xx
+  meaning: Redirected
+  description: Requires further action to complete the request.
+- class: 4xx
+  meaning: Request error
+  description: Indicates a client error with the information provided.
+- class: 5xx
+  meaning: Server error
+  description: Indicates an error with LetsGetChecked servers.
+
+problems:
+- status: 200
+  title: OK
+  description: Standard response for successful HTTP requests.
+  class: success
+- status: 202
+  title: Accepted
+  description: Request accepted for processing.
+  class: success
+  note: 'Used where processing is asynchronous, for example the v2 PATCH order-item
+    cancellation, whose completion is confirmed by webhook.'
+- status: 304
+  title: Not Modified
+  description: Requires further action to complete the request.
+  class: redirection
+- status: 400
+  title: Bad request
+  description: The request could not be understood or was malformed.
+  class: client-error
+  remediation: Validate the request body and parameters against the operation reference.
+- status: 401
+  title: Unauthorized
+  description: Authentication issues.
+  class: client-error
+  remediation: 'Request a new access token from {LGC-API}/oauth2/token; the bearer token
+    is missing, malformed, or expired.'
+  see: authentication/letsgetchecked-authentication.yml
+  webhook_note: 'A 401 returned by a CLIENT webhook endpoint is treated by LetsGetChecked
+    as a retryable failure.'
+- status: 403
+  title: Forbidden
+  description: The caller is not permitted to access the resource.
+  class: client-error
+  webhook_note: 'A 403 returned by a CLIENT webhook endpoint is treated by LetsGetChecked
+    as a retryable failure.'
+- status: 404
+  title: Not found
+  description: A required parameter cannot be found.
+  class: client-error
+  remediation: Check the clientId, clientOrderId, barcode, or letterId in the path.
+- status: 406
+  title: Not acceptable
+  description: The file format is not supported.
+  class: client-error
+  remediation: 'Send an Accept header the operation supports — application/json for the
+    REST operations, or the documented HL7 / PDF representation for results.'
+- status: 409
+  title: Conflict
+  description: The order that is being sent already exists.
+  class: client-error
+  remediation: 'Treat as the idempotent outcome of a duplicate clientOrderId rather than
+    a failure; fetch the existing order with GET Order.'
+  see: conventions/letsgetchecked-conventions.yml
+- status: 410
+  title: Gone
+  description: Unsupported version of the API.
+  class: client-error
+  remediation: Move the integration to a supported /api/{version}/ path.
+  see: lifecycle/letsgetchecked-lifecycle.yml
+- status: 415
+  title: Unsupported media type
+  description: The request Content-Type is not supported.
+  class: client-error
+  remediation: 'Send Content-Type: application/json on request bodies.'
+- status: 500
+  title: Internal server error
+  description: Indicates an error with LetsGetChecked servers.
+  class: server-error
+  remediation: 'Retry with backoff; order creation is idempotent so a replay of the same
+    clientOrderId is safe.'
+- status: 503
+  title: Service unavailable
+  description: Indicates an error with LetsGetChecked servers.
+  class: server-error
+  remediation: Retry with backoff.
+
+webhook_delivery_failures:
+  description: 'Status codes LetsGetChecked treats as a failed delivery to a CLIENT
+    webhook endpoint, triggering the retry ladder.'
+  retryable_statuses:
+  - 5xx
+  - 401
+  - 403
+  acknowledged_status: 200
+  retry_policy: asyncapi/letsgetchecked-notifications-webhooks.yml
+
+gaps:
+- No application-level error codes or error identifiers are published — only HTTP status
+  classes.
+- No example error payload is published anywhere in the documentation.
+- No 429 / rate-limit error is documented.
+- ValidationFailed is modelled as an ORDER STATUS rather than an error response, so a
+  rejected order returns success at the HTTP layer and surfaces the failure later via
+  status and webhook.

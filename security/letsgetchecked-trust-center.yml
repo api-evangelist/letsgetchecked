@@ -1,0 +1,82 @@
+generated: '2026-08-04'
+method: searched
+probe: true
+source: https://trust.letsgetchecked.com/
+url: https://trust.letsgetchecked.com/
+platform: Conveyor
+published: true
+claimed_by_vendor: true
+
+# CORRECTION NOTE (2026-08-04): the mechanical keyword probe first recorded
+# SOC 2 / ISO 27001 / ISO 27017 / ISO 27018 / FedRAMP for LetsGetChecked. Those are
+# WRONG. The Conveyor trust-center page embeds a "trusted by / vendors" data blob
+# carrying OTHER companies' certification lists (Salesforce, Twilio, AWS, Mailgun,
+# Lob, PFL, Momentive), and the keyword scan picked those up. The list below is taken
+# from LetsGetChecked's OWN record in the page's window.CANONICAL_ASSET object
+# (id 0d8b479f-ac02-4970-80ea-91d7dd5935d4, slug "letsgetchecked",
+# website http://www.letsgetchecked.com), which is the authoritative vendor entry.
+# Do not re-run the keyword probe over this file without re-applying this correction.
+
+certifications:
+- GDPR
+- HITRUST
+- NIST
+- ISO 13485
+
+certifications_raw:
+- gdpr
+- hitrust
+- nist
+- iso-13485
+
+not_claimed:
+  note: 'Absent from the vendor''s own certification list on its trust centre. Recorded
+    because a healthcare data processor is commonly assumed to hold these.'
+  frameworks:
+  - SOC 2 Type II
+  - ISO 27001
+  - HIPAA
+  hipaa_note: 'HIPAA is not listed as a certification on the trust centre, though the
+    API documentation discusses PHI handling and the developer glossary defines PHI
+    under HIPAA.'
+  soc2_indicator: 'Conveyor''s own trust indicator "Do they have a current SOC 2 Type
+    II Report to share (or proof that they support a comparable framework)?" scores
+    "unknown" on this profile — no data collected.'
+
+report_vulnerability_url: https://www.letsgetchecked.com/security.txt
+has_published_report: false
+public_profile_published: true
+subprocessors_published: true
+subprocessors_updated_at: '2025-11-14T17:00:19.811Z'
+subprocessor_count: 14
+subprocessor_categories:
+- Telephony management
+- Cloud service provider
+- Customer communications
+- Lab Information System
+- Prescription System
+- Email & document storage
+- Mail Provider
+- Transactional Email provider
+- eFax provider
+- CRM
+- Supporting Onsite Health Screening
+- Email encryption
+subprocessor_data_locations:
+- United States
+sections:
+- Featured Documents
+- What we offer
+- Subprocessors
+- Video Resources
+last_updated: '2025-12-15T20:27:33.184Z'
+
+evidence:
+- source: https://trust.letsgetchecked.com/
+  http_status: 200
+  fetched: '2026-08-04'
+  extracted_from: window.CANONICAL_ASSET (the vendor's own record on the Conveyor page)
+  fields:
+  - certifications
+  - report_vulnerability_url
+  - subprocessors

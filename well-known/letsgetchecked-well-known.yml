@@ -1,0 +1,139 @@
+generated: '2026-08-04'
+method: probed
+source: live HTTP probe of every LetsGetChecked host known to the profile
+
+# Every host reachable from apis.yml was swept for the RFC 8615 discovery surface.
+# LetsGetChecked publishes NO machine-readable API-discovery document at any
+# /.well-known/ path on its own domains. It does publish a real RFC 9116
+# security.txt, but at the pre-RFC legacy location /security.txt rather than the
+# canonical /.well-known/security.txt.
+#
+# FALSE-POSITIVE WARNING: halo.letsgetchecked.com (Angular SPA) and
+# trust.letsgetchecked.com (Conveyor-hosted trust center) both answer HTTP 200 with
+# an HTML application shell for EVERY /.well-known/* path. Those 200s are catch-all
+# routes, not documents, and are recorded here as html-catch-all so a later pass does
+# not mistake them for hits.
+
+hosts:
+- host: https://www.letsgetchecked.com
+  role: corporate website
+  documents:
+  - path: /security.txt
+    status: 200
+    content_type: text/plain
+    file: letsgetchecked-security.txt
+    note: 'Real RFC 9116 document, but served from the legacy root path. The canonical
+      /.well-known/security.txt returns 404. The Expires field is 2024-03-01, so the
+      published document is expired under RFC 9116 section 2.5.5.'
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://docs.letsgetchecked.com
+  role: developer documentation (Docusaurus)
+  documents:
+  - path: /security.txt
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+  - path: /openapi.json
+    status: 404
+  - path: /openapi.yaml
+    status: 404
+  - path: /swagger.json
+    status: 404
+  - path: /sitemap.xml
+    status: 200
+    content_type: application/xml
+    note: 'Present, but every <loc> is emitted as http://localhost/... — the Docusaurus
+      url/baseUrl config is unset, so the sitemap is unusable by crawlers and agents.'
+- host: https://halo.letsgetchecked.com
+  role: Halo platform application (Angular SPA)
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: text/html
+    result: html-catch-all
+    note: SPA catch-all returns the same 16KB HTML shell for every path; not an agent card.
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: text/html
+    result: html-catch-all
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: text/html
+    result: html-catch-all
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    result: html-catch-all
+  - path: /openapi.json
+    status: 200
+    content_type: text/html
+    result: html-catch-all
+- host: https://help.letsgetchecked.com
+  role: help centre (Salesforce Experience Cloud)
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: letsgetchecked-help-openid-configuration.json
+    note: 'Genuine OIDC discovery document, but it is the stock Salesforce Experience
+      Cloud identity provider for the help centre (issuer https://help.letsgetchecked.com,
+      Salesforce /services/oauth2/* endpoints and Salesforce platform scopes). It is
+      NOT the authorization server behind the LetsGetChecked B2B APIs, which the docs
+      describe only as {LGC-API}/oauth2/token.'
+  - path: /.well-known/security.txt
+    status: 401
+  - path: /.well-known/oauth-authorization-server
+    status: 401
+  - path: /.well-known/agent-card.json
+    status: 401
+- host: https://trust.letsgetchecked.com
+  role: trust centre (Conveyor)
+  documents:
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: text/html
+    result: html-catch-all
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html
+    result: html-catch-all
+
+summary:
+  security_txt: present-at-legacy-path
+  security_txt_expired: true
+  openid_configuration: present-on-help-subdomain-only
+  oauth_authorization_server: absent
+  api_catalog: absent
+  ai_plugin: absent
+  agent_card: absent

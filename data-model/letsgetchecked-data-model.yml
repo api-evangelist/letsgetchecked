@@ -1,0 +1,290 @@
+generated: '2026-08-04'
+method: derived
+source: https://docs.letsgetchecked.com/documentation/API%20Reference/
+derived_from: published request/response property tables in the API reference (no OpenAPI
+  exists to derive from)
+
+# Entity-relationship graph for the LetsGetChecked B2B APIs, reconstructed from the
+# property tables the documentation publishes for PUT Order v2, GET Order v2,
+# GET Results and the Outreach operations. Field names, types and formats are taken
+# verbatim from those tables; nothing is inferred beyond the relationships the tables
+# make explicit.
+
+identifier_formats:
+  clientId: 1-4 alphanumeric characters; appears in HL7 results as PV1.3.1
+  clientOrderId: client-supplied, max 100 characters, unique per client
+  lgcOrderRef: GUID
+  orderItemId: GUID
+  barcode: 'LGC-0000-0000-0000'
+  alphaCode: 'AAAAAA (uppercase A-Z)'
+  letterId: '<audience>_<barcode>, e.g. patient_LGC-2787-3959-3483'
+  participantId: 'client-supplied, must be unique and never reused or recycled'
+
+entities:
+- name: Client
+  description: The B2B integrator. Every API path is scoped by its clientId.
+  key: clientId
+  api: all
+
+- name: Order
+  description: A request for one or more pre-activated test kits, named by the client.
+  key: clientOrderId
+  alternate_key: lgcOrderRef
+  api: Orders API
+  fields:
+  - clientOrderId
+  - participantId
+  - orderItems
+  v1_difference: 'v1 exposes order-level status and a replacementOrders property; v2 moves
+    status and replacement linkage down onto the order item.'
+
+- name: OrderItem
+  description: One test kit within an order. Introduced in Orders API v2.
+  key: id
+  api: Orders API v2
+  fields:
+  - code
+  - id
+  - replacementOrderItemId
+  - createdAt
+  - updatedAt
+  - status
+  - lgcKitIdentifier
+  - shipment
+  status_values:
+  - Submitted
+  - ValidationFailed
+  - Created
+  - KitDispatched
+  - KitRegistered
+  - KitArrivedAtLab
+  - ResultsAvailable
+  - Cancelled
+
+- name: LgcKitIdentifier
+  description: 'The physical test kit, identified once the participant registers it. Null
+    before the KitRegistered status.'
+  key: numericalCode
+  fields:
+  - numericalCode
+  - alphaCode
+
+- name: Shipment
+  description: Outbound and inbound carrier tracking for a kit.
+  fields:
+  - OutboundTrackingNumber
+  - InboundTrackingNumber
+
+- name: PatientInfo
+  description: The participant the kit is dispatched to and whose sample is tested.
+  api: Orders API
+  fields:
+  - gender
+  - participantLanguage
+  - phoneCountryCode
+  - address
+
+- name: Address
+  description: Delivery address for the test kit.
+  fields:
+  - state
+  - countryIsoAlpha2
+  note: countryIsoAlpha2 replaced countryName on 1 April 2022.
+
+- name: PhysicianInfo
+  description: Ordering or reviewing physician associated with the order.
+  api: Orders API
+
+- name: QuestionnaireInfo
+  description: Questionnaire responses attached to the order.
+  api: Orders API
+
+- name: Questionnaire
+  description: 'Questions and possible answers for a test kit, filtered by gender.
+    Completed by the customer after ordering and before registering the kit.'
+  key: testKitCode
+  api: Orders API v1
+
+- name: CustomData
+  description: Client-controlled custom payload carried on an order.
+  api: Orders API
+
+- name: Result
+  description: The laboratory result set for a registered test kit.
+  key: barcode
+  secondary_key: alphaCode
+  api: Results API
+  representations: [JSON, HL7, PDF]
+  fields:
+  - testResults
+  - patientIdentification
+
+- name: TestResult
+  description: One biomarker measurement within a result set.
+  api: Results API
+  fields:
+  - biomarkerName
+  - kind
+  - descriptor
+  - headline
+  - qualitativeValue
+  - quantitativeValue
+  - lowerBound
+  - upperBound
+  - coding
+  kind_values: [Qualitative, Quantitative, Genetic]
+  descriptor_values_quantitative: [Normal, Low, High, Borderline]
+  descriptor_values_qualitative: [Reactive, Detected, Positive, Isolated, Non Reactive,
+    Not Detected, Negative, Not Isolated]
+  additional_qualitative_values: [PresumptivePositive, Equivocal, PossibleCeliac,
+    PresumptiveCeliac, NotLikelyCeliac, InsufficientSpecimen, AgedSpecimen]
+
+- name: Coding
+  description: LOINC codes associated with the biomarker of a specific test kit.
+  api: Results API
+  standard: LOINC
+  added: '2022-08-19'
+
+- name: PatientIdentification
+  description: Patient identity block carried on a result, including an address.
+  api: Results API
+
+- name: OutreachNotification
+  description: A generated results-letter notification for a client program.
+  key: barcode
+  api: Outreach API
+  fields:
+  - barcode
+  - type
+  - status
+  - failureReason
+  - timestamp
+  type_values: [PcpResultsLetter, PatientResultsLetter]
+  status_values: [DeliverySent]
+
+- name: ResultsLetter
+  description: The downloadable letter document generated for a patient or their PCP.
+  key: letterId
+  api: Outreach API
+
+- name: Program
+  description: A client program that groups outreach notifications and letters.
+  key: programName
+  api: Outreach API
+
+- name: WebhookNotification
+  description: An event message posted to the client endpoint when a resource changes.
+  api: API Notifications
+  detail: asyncapi/letsgetchecked-notifications-webhooks.yml
+
+relationships:
+- from: Client
+  to: Order
+  type: has_many
+  via: clientId
+- from: Order
+  to: OrderItem
+  type: has_many
+  via: orderItems
+- from: OrderItem
+  to: OrderItem
+  type: has_one
+  via: replacementOrderItemId
+  note: 'Replacement linkage. In v1 the equivalent is the order-level replacementOrders
+    property.'
+- from: OrderItem
+  to: LgcKitIdentifier
+  type: has_one
+  via: lgcKitIdentifier
+- from: OrderItem
+  to: Shipment
+  type: has_one
+  via: shipment
+- from: Order
+  to: PatientInfo
+  type: has_one
+  via: patientInfo
+- from: PatientInfo
+  to: Address
+  type: has_one
+  via: address
+- from: Order
+  to: PhysicianInfo
+  type: has_one
+  via: physicianInfo
+- from: Order
+  to: QuestionnaireInfo
+  type: has_one
+  via: questionnaireInfo
+- from: Order
+  to: CustomData
+  type: has_one
+  via: customData
+- from: Questionnaire
+  to: OrderItem
+  type: belongs_to
+  via: testKitCode
+  note: 'Questionnaires are fetched by test kit code, the same code carried on
+    orderItems/code.'
+- from: LgcKitIdentifier
+  to: Result
+  type: has_one
+  via: numericalCode -> barcode
+  note: 'The join between the ordering domain and the results domain. The kit barcode
+    issued at registration is the key the Results API is read by.'
+- from: Result
+  to: TestResult
+  type: has_many
+  via: testResults
+- from: TestResult
+  to: Coding
+  type: has_many
+  via: coding
+- from: Result
+  to: PatientIdentification
+  type: has_one
+  via: patientIdentification
+- from: Result
+  to: OutreachNotification
+  type: has_many
+  via: barcode
+- from: OutreachNotification
+  to: ResultsLetter
+  type: has_one
+  via: barcode -> letterId
+- from: Program
+  to: OutreachNotification
+  type: has_many
+  via: programName
+- from: Order
+  to: WebhookNotification
+  type: has_many
+  via: clientOrderId
+- from: Result
+  to: WebhookNotification
+  type: has_many
+  via: barcode
+- from: OutreachNotification
+  to: WebhookNotification
+  type: has_many
+  via: barcode
+
+domains:
+- name: ordering
+  entities: [Client, Order, OrderItem, PatientInfo, Address, PhysicianInfo,
+    QuestionnaireInfo, Questionnaire, CustomData, Shipment, LgcKitIdentifier]
+- name: results
+  entities: [Result, TestResult, Coding, PatientIdentification]
+- name: outreach
+  entities: [Program, OutreachNotification, ResultsLetter]
+- name: events
+  entities: [WebhookNotification]
+
+notes:
+- 'The barcode is the pivot of the whole model: it is minted when a participant registers a
+  kit, and it is the read key for results, outreach notifications and letters. An order
+  cannot be joined to its result until KitRegistered has occurred.'
+- 'Order and result each carry an independent status, and the same status value can appear
+  on both. They must be interpreted separately.'
+- 'No object reference page or id-prefix scheme is published; all formats above come from
+  the per-operation property tables.'

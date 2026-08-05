@@ -1,0 +1,79 @@
+generated: '2026-08-04'
+method: searched
+source: https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/integration-process/
+docs: https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/integration-process/
+
+environments:
+- name: staging
+  purpose: Integration development and verification before production access is granted.
+  self_service: false
+  access_model: 'LetsGetChecked issues API credentials and grants access to the staging
+    environment as part of onboarding.'
+  network_restriction: 'IP-restricted. LetsGetChecked shares the staging server IP address
+    with the client.'
+  webhook_setup: 'The LetsGetChecked team configures the staging environment webhook. The
+    client must supply its HMAC signing key and staging webhook URL.'
+  test_programs: 'LetsGetChecked creates a technical program for each test kit in staging.'
+- name: production
+  purpose: Live orders and results.
+  self_service: false
+  access_model: 'Production credentials are issued, and production endpoints opened, only
+    after LetsGetChecked verifies the client integration and has access to the implemented
+    functionality, and both parties are satisfied with it.'
+
+separation:
+  mechanism: separate environment and separate issued credentials
+  key_prefixes: none published
+  key_prefix_note: 'There is no test/live key prefix convention (no sk_test_ style marker).
+    Test and live are separated by environment and credential, not by key shape.'
+  mode_header: none
+
+test_values:
+  published: false
+  test_barcodes: none published
+  test_alpha_codes: none published
+  magic_identifiers: none published
+  fixture_triggers: none published
+  time_simulation: none published
+  note: 'LetsGetChecked publishes NO magic test values — no sample barcodes that produce a
+    given result, no seeded orders, no status-forcing triggers, and no clock control.
+    Statuses are exercised by having LetsGetChecked configure a technical program per test
+    kit in staging. Nothing is invented here.'
+
+public_console:
+  present: false
+  note: 'No interactive API console, "try it" widget, or hosted playground on the docs site.
+    The Docusaurus reference is static prose with curl samples. halo.letsgetchecked.com is
+    the Halo platform application, not a developer sandbox.'
+
+self_service_signup:
+  present: false
+  note: 'There is no developer sign-up for the B2B API. Consumer registration at
+    letsgetchecked.com/register is for the retail testing product, not the API.'
+
+sample_requests:
+  token: 'curl -X POST --user <access key>:<secret key> ''{LGC-API}/oauth2/token?grant_type=client_credentials''
+    -H ''Content-Type: application/x-www-form-urlencoded'''
+  order: 'curl -X PUT ''{LGC-API}/<clientId>/order/<clientOrderId>'' -H ''Content-Type: application/json''
+    -H ''Authorization:<access_token>'' -d ''{}'''
+  note: 'Both samples are templated on {LGC-API}; the host is not published. Note also that
+    the authentication-flow sample writes the path as /<clientId>/order/<clientOrderId>
+    while the Orders reference writes /<clientId>/api/v1/orders/<clientOrderId> — the
+    published samples disagree.'
+  source: https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/authentication-flow/
+
+webhook_testing:
+  published_example: true
+  description: 'The API Notifications security page publishes a worked HMAC example so a
+    client can verify its signature implementation locally: stringify the body, run
+    HMAC-SHA256 with the signing key, base64-encode, and compare against the header.'
+  source: https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/security/
+  values_note: 'The example includes a sample signing key and header. Those are vendor
+    documentation examples, not live credentials, and are deliberately NOT copied into this
+    repository.'
+
+gaps:
+- No self-service sandbox; every integration requires a LetsGetChecked-mediated onboarding.
+- No published test data, so a client cannot rehearse result-bearing flows independently.
+- No API console or interactive reference.
+- The token and order curl samples use inconsistent path shapes.

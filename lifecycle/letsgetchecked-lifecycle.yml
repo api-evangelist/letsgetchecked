@@ -1,0 +1,94 @@
+generated: '2026-08-04'
+method: searched
+source: https://docs.letsgetchecked.com/documentation/release-notes/release_notes/
+
+versioning:
+  scheme: uri-path
+  pattern: '{clientId}/api/{version}/{resource}'
+  versions:
+  - version: v1
+    status: supported
+    surfaces: [Orders API, Results API, Outreach API]
+  - version: v2
+    status: supported
+    surfaces: [Orders API]
+    introduced: '2023-09-14'
+    additions:
+    - order-item model with per-item id and status
+    - PATCH order-item endpoint (cancel order item)
+    - GET Order replaces GET Order Status
+    - replacementOrderItemId on order items
+  current: v2
+  current_note: 'v2 exists only for Orders. Results and Outreach remain v1, so a client
+    integrating the full platform runs both versions concurrently.'
+  docs: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/orders/
+
+deprecation:
+  policy_published: false
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  advance_notice_period: not published
+  note: 'No deprecation or sunset policy is published. The only lifecycle signal in the
+    contract is an HTTP 410 with the description "Unsupported version of the API", which
+    is an outcome rather than a policy — it tells a client a version is gone, not that it
+    is going. RFC 8594 Sunset and Deprecation headers are not mentioned. Orders API v1 is
+    still fully documented alongside v2 with no stated end-of-life.'
+  observed_signal:
+    status: 410
+    description: Unsupported version of the API.
+    source: https://docs.letsgetchecked.com/documentation/API%20Reference/errors/
+
+status_page:
+  published: false
+  probed:
+  - url: https://status.letsgetchecked.com
+    result: DNS NXDOMAIN
+    fetched: '2026-08-04'
+  note: 'No status page, uptime dashboard, or incident history is published on any
+    LetsGetChecked domain. No StatusPage pointer is wired in apis.yml because there is
+    nothing to point at.'
+
+sla:
+  published: false
+  uptime_target: not published
+  note: 'No public SLA or uptime commitment. The only published time commitment is
+    operational rather than technical: an order is dispatched within one business day of
+    order creation in most cases.'
+
+release_notes:
+  url: https://docs.letsgetchecked.com/documentation/release-notes/release_notes/
+  dated: true
+  most_recent_entry: '2023-09-14'
+  staleness_note: 'The most recent dated release note is 14 September 2023 — roughly
+    three years before this profile was built. Either the API contract has been stable
+    since then or the changelog is no longer maintained; the documentation does not say
+    which.'
+  detail: changelog/letsgetchecked-changelog.yml
+
+breaking_change_policy:
+  published: false
+
+deprecated_operations: []
+deprecated_operations_note: 'Cannot be derived — LetsGetChecked publishes no OpenAPI, so
+  there is no deprecated: true flag to read. GET Order Status (v1) is superseded by
+  GET Order (v2) but is not marked deprecated in the documentation.'
+
+environments:
+- name: staging
+  self_service: false
+  ip_restricted: true
+- name: production
+  self_service: false
+  gated_on: LetsGetChecked verification of the client integration
+
+documentation_platform:
+  generator: Docusaurus
+  defect: 'The site is deployed without url/baseUrl configured. sitemap.xml emits every
+    <loc> as http://localhost/..., and the footer carries a link to http://localhost/.
+    Search engines and agents crawling the sitemap resolve nothing. This is a live
+    discoverability defect worth reporting back to the provider.'
+  evidence:
+  - url: https://docs.letsgetchecked.com/sitemap.xml
+    http_status: 200
+    fetched: '2026-08-04'

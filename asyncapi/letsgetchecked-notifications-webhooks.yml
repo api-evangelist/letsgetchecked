@@ -1,0 +1,163 @@
+generated: '2026-08-04'
+method: searched
+source: https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/webhooks/
+spec_type: none
+spec_type_note: 'LetsGetChecked publishes NO AsyncAPI document. The GitHub org
+  (github.com/LetsGetChecked) carries three repositories, none of them a specification,
+  and no /asyncapi.yaml or event-catalog endpoint exists on any host. This artifact
+  captures the documented WEBHOOK CATALOG verbatim from the API Notifications reference —
+  it is a Webhooks surface, not an AsyncAPI one. Nothing here is generated.'
+
+surface: webhooks
+docs: https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/webhooks/
+
+transport:
+  protocol: HTTPS
+  method: POST
+  direction: LetsGetChecked -> client endpoint
+  content_type: application/json
+  endpoint_registration: 'Manual. The client supplies its endpoint URL (and HMAC signing
+    key) to LetsGetChecked, who configure the webhook on the staging environment during
+    onboarding. There is no self-service webhook management API.'
+  endpoint_granularity: 'A single destination endpoint, or a different endpoint per
+    webhook type.'
+
+payload:
+  shape: '{ "type": <resource type>, "body": { ... } }'
+  common_fields:
+  - name: type
+    description: The resource type that changed — order, Result, or outreach.
+    note: 'Case is inconsistent across the published examples: "order", "Result",
+      "outreach".'
+  - name: body.callbackURL
+    description: A URL back into the LetsGetChecked REST API to query the changed resource.
+    absent_on: [outreach]
+  - name: body.timestamp
+    description: Creation time of the message, UTC. Use it to order events against your
+      own state.
+
+event_types:
+- type: order
+  description: An updated order.
+  versions:
+  - version: v1
+    example:
+      body:
+        clientOrderId: '123456789'
+        callbackURL: '{LGC-API}/1001/api/v1/orders/123456789/status'
+        timestamp: '2022-03-04T11:35:17.43+00:00'
+      type: order
+  - version: v2
+    example:
+      type: order
+      body:
+        clientOrderId: '246975'
+        callbackURL: '{LGC-API}/1111/api/v2/orders/246975'
+        orderItemStatus:
+          id: 2fa58516-fc54-4e5d-9349-4865d38f785e
+          status:
+            code: KitRegistered
+        timestamp: '2023-05-15T16:22:11.3513804Z'
+  statuses:
+  - code: Submitted
+    description: The client has submitted an order to LetsGetChecked.
+  - code: Created
+    description: LetsGetChecked has created the order.
+  - code: KitDispatched
+    description: The order is dispatched from LetsGetChecked to the participant.
+  - code: KitRegistered
+    description: 'The participant has activated the test kit; the LGC kit identifier is
+      populated.'
+  - code: KitArrivedAtLab
+    description: The test kit is received at the LetsGetChecked lab.
+  - code: ResultsAvailable
+    description: Results are available for a test kit.
+  - code: Cancelled
+    description: 'Set when a client triggers cancellation via the v2 PATCH order endpoint.
+      Only available up to KitArrivedAtLab, and only on Orders API v2.'
+  - code: ValidationFailed
+    description: 'Set when the system cannot process a submitted order; the status moves
+      from Submitted to ValidationFailed.'
+
+- type: Result
+  description: An updated result.
+  example:
+    body:
+      barcode: LGC-XXX-XXX-XXX
+      alphaCode: QWERTY
+      callbackURL: '{LGC-API}/1001/api/v1/results/{Barcode}?alphaCode={AlphaCode}&fields=status'
+      timestamp: '2022-03-04T10:33:37.6713587Z'
+    type: Result
+  note: 'Order and result each carry their own status. The same status value (for example
+    ResultsAvailable) can arrive on both the order and the result event and must be
+    interpreted separately.'
+
+- type: outreach
+  description: An updated outreach notification.
+  example:
+    body:
+      barcode: LGC-XXX-XXX-XXX
+      type: PcpResultsLetter
+      status: DeliverySent
+      failureReason: null
+      timestamp: '2022-08-10T11:37:37.6715487Z'
+    type: outreach
+  body_types:
+  - PcpResultsLetter
+  - PatientResultsLetter
+  body_statuses:
+  - DeliverySent
+  fields:
+  - name: failureReason
+    description: Not currently in use; the value is always null.
+  no_callback_url: true
+
+delivery:
+  guarantee: at-least-once
+  ordering: not guaranteed
+  ordering_note: 'Events may not arrive in generation order. LetsGetChecked''s own example
+    is that KitDispatched and KitRegistered can be delivered out of sequence, and advises
+    clients to reconcile by querying the API for the current status.'
+  duplicate_handling: 'Endpoints may receive the same event more than once; clients are
+    instructed to make event processing idempotent.'
+  acknowledgement:
+    success_status: 200
+  retry:
+    retryable_statuses: [5xx, 401, 403]
+    schedule: '3 immediate retries, then a 15-minute wait followed by 3 more immediate
+      retries, looping 4 times — a 1-hour retry window in total.'
+    total_attempts: 15
+    exhaustion: 'The webhook mechanism fails; the client must contact LetsGetChecked.'
+    dead_letter_queue: none published
+    replay_api: none published
+  docs: https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/event_handling/
+
+security:
+  default: unauthenticated
+  default_note: 'LetsGetChecked states authentication is not required for submitted
+    payloads "due to their lightweight content", and instructs clients to inspect the
+    received callback URL so access tokens are not leaked when following links.'
+  optional_signing:
+    enabled_on_request: true
+    header: Authorization
+    scheme: LGC2-HMAC-SHA256
+    algorithm: HMAC-SHA256
+    encoding: base64
+    signed_payload: the stringified JSON request body
+    key_supply: 'Client generates a strong signing key in base64 and provides it to
+      LetsGetChecked.'
+    verification: 'Recompute HMAC-SHA256(signing key, stringified body), base64-encode,
+      and compare with the header value.'
+    reference: https://www.rfc-editor.org/rfc/rfc2104
+    replay_protection: none published
+    timestamp_tolerance: not published
+  docs: https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/security/
+
+gaps:
+- No AsyncAPI (or any machine-readable event schema) is published.
+- No self-service webhook subscription, rotation, or test-delivery endpoint.
+- Signing is opt-in rather than default, on a surface that notifies about PHI-bearing
+  resources.
+- No timestamp tolerance or nonce, so a signed payload can be replayed.
+- No dead-letter queue or event-replay API once the 1-hour retry window is exhausted.
+- The type discriminator is inconsistently cased across the published examples.

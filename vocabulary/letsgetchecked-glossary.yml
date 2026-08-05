@@ -1,0 +1,186 @@
+generated: '2026-08-04'
+method: searched
+source: https://docs.letsgetchecked.com/documentation/Glossary/terms/
+name: LetsGetChecked Developer Glossary
+description: 'The glossary LetsGetChecked publishes alongside its B2B API reference. It is a mixed
+  technical and clinical vocabulary: API and authentication terms a developer needs to read the reference,
+  healthcare interchange standards (HL7, the OBX segment, NPI), regulatory definitions (CLIA, PHI
+  under HIPAA), and the clinical concepts (biomarkers, genotype, phenotype, specific analytes) that
+  appear in result payloads. Published 3 March 2022. Captured verbatim.'
+docs: https://docs.letsgetchecked.com/documentation/Glossary/terms/
+published: '2022-03-03'
+term_count: 37
+categories:
+- api
+- authentication
+- security
+- standard
+- regulatory
+- clinical
+terms:
+- term: Access keys
+  definition: A code that is used as a unique identifier and provides a secret token for authentication
+    purposes.
+  category: authentication
+- term: Access Tokens
+  definition: Access tokens are used in token-based authentication to allow an application to access
+    an API.
+  category: authentication
+- term: Application Programming Interface (API)
+  definition: A software intermediary that allows two applications to talk to each other.
+  category: api
+- term: Biomarker
+  definition: A biological molecule found in blood, other body fluids, or tissues that is a sign
+    of a normal or abnormal process, or of a condition or disease.
+  category: clinical
+- term: Client-credentials grant type
+  definition: The client-credentials grant type is used by clients to obtain an access token outside
+    of the context of a user. This is typically used by clients to access resources about themselves
+    rather than to access a user's resources.
+  category: authentication
+- term: Clinical Laboratory Improvement Amendments (CLIA)
+  definition: The Clinical Laboratory Improvement Amendments of 1988 are United States federal regulatory
+    standards that apply to all clinical laboratory testing performed on humans in the United States,
+    except clinical trials and basic research.
+  category: regulatory
+- term: Coordinated Universal Time (UTC)
+  definition: The primary time standard by which the world regulates clocks and time.
+  category: api
+- term: Genotype
+  definition: The genotype of an organism is its complete set of genetic material. Genotype can also
+    be used to refer to the alleles or variants an individual carries in a particular gene or genetic
+    location.
+  category: clinical
+- term: GET
+  definition: A HTTP method that retrieves data from a server at the specified resource.
+  category: api
+- term: Globally Unique Identifier (GUID)
+  definition: Also known as a universally unique identifier. A 128-bit integer number is used to
+    identify resources.
+  category: api
+- term: Hash-based Message Authentication Code (HMAC)
+  definition: A message authentication code that uses a cryptographic key with a hash function.
+  category: security
+- term: Health Level 7 (HL7)
+  definition: Health Level Seven or HL7 refers to a set of international standards for the transfer
+    of clinical and administrative data between software applications used by various healthcare
+    providers.
+  category: standard
+- term: Hepatitis B (HBV)
+  definition: A vaccine-preventable liver infection caused by the hepatitis B virus (HBV). Hepatitis
+    B is spread when blood, semen, or other body fluids from a person infected with the virus enters
+    the body of someone who is not infected.
+  category: clinical
+- term: Hepatitis C (HCV)
+  definition: Hepatitis C is spread through contact with blood from an infected person. Today, most
+    people become infected with the Hepatitis C virus by sharing needles or other equipment used
+    to prepare and inject drugs.
+  category: clinical
+- term: High-density lipoprotein (HDL)
+  definition: High-density lipoprotein is one of the five major groups of lipoproteins. Lipoproteins
+    are complex particles composed of multiple proteins which transport all fat molecules around
+    the body within the water outside cells.
+  category: clinical
+- term: Human chorionic gonadotropin (hCG)
+  definition: Human chorionic gonadotropin is a hormone for the maternal recognition of pregnancy
+    produced by trophoblast cells that are surrounding a growing embryo, which eventually forms the
+    placenta after implantation.
+  category: clinical
+- term: Hypertext Transfer Protocol Secure (HTTPS )
+  definition: A protocol where encrypted HTTP data is transferred over a secure connection.
+  category: api
+- term: The International Organization for Standardization (ISO)
+  definition: The International Organization for Standardization is an international standard-setting
+    body composed of representatives from various national standards organizations. The organization
+    develops and publishes worldwide technical, industrial, and commercial standards.
+  category: standard
+- term: JavaScript Object Notation (JSON)
+  definition: A standard text-based format for representing structured data based on JavaScript object
+    syntax. It is commonly used for transmitting data in web applications.
+  category: api
+- term: JSON Web Token (JWT)
+  definition: An open standard for securely transmitting information as a JSON object. Tokens are
+    signed either using a private secret or a public/private key.
+  category: authentication
+- term: Low-density lipoprotein (LDL)
+  definition: Low-density lipoprotein is one of the five major groups of lipoprotein that transport
+    all fat molecules around the body in the extracellular water.
+  category: clinical
+- term: Multipurpose Internet Mail Extensions (MIME)
+  definition: An Internet standard that extends the format of email messages to support text in character
+    sets other than ASCII, as well as attachments of audio, video, images, and application programs.
+  category: api
+- term: National Provider Identifier (NPI)
+  definition: A National Provider Identifier is a unique, 10-digit identification number issued to
+    healthcare providers in the United States by the Centers for Medicare and Medicaid Services.
+  category: standard
+- term: OAuth 2.0
+  definition: The OAuth 2.0 authorization framework is a protocol that allows a user to grant a third-party
+    website or application access to the user's protected resources, without necessarily revealing
+    their long-term credentials or even their identity.
+  category: authentication
+- term: OBX segment
+  definition: The OBX segment is used to transmit a single observation or observation fragment. It
+    represents the smallest indivisible unit of a report. The OBX segment can also contain encapsulated
+    data, for example, a CDA document or a DICOM image. Its principal mission is to carry information
+    about observations in report messages.
+  category: standard
+- term: Phenotype
+  definition: The set of observable characteristics or traits of an organism. The term covers the
+    organism's morphology or physical form and structure, its developmental processes, its biochemical
+    and physiological properties, its behavior, and the products of behavior.
+  category: clinical
+- term: Primary Care Physician OR Primary Care Provider (PCP)
+  definition: 'Primary Care Physician : A physician (Medical Doctor) who directly provides or coordinates
+    a range of health care services for a patient. Such physicians are specifically trained to provide
+    comprehensive primary care services through residency or fellowship training in acute and chronic
+    care settings. Primary Care Provider : A physician, nurse practitioner, clinical nurse specialist,
+    or physician assistant, as allowed under state law, who provides, coordinates, or helps a patient
+    access a range of health care services.'
+  category: clinical
+- term: Protected Health Information OR Personal Health Information (PHI)
+  definition: Under HIPAA, PHI is considered to be any identifiable health information that is used,
+    maintained, stored, or transmitted by a HIPAA-covered entity – a healthcare provider, health
+    plan or health insurer, or a healthcare clearinghouse – or a business associate of a HIPAA-covered
+    entity, concerning the provision of healthcare or payment for healthcare services.
+  category: regulatory
+- term: POST
+  definition: A HTTP method that is used to create a resource.
+  category: api
+- term: PUT
+  definition: A HTTP method used to update a resource. If the resource doesn't exist, it creates
+    a new resource.
+  category: api
+- term: Reverse transcription-polymerase chain reaction (RT-PCR)
+  definition: The reverse transcription-polymerase chain reaction is a laboratory technique combining
+    reverse transcription of RNA into DNA and amplification of specific DNA targets using polymerase
+    chain reaction. It is primarily used to measure the amount of a specific RNA.
+  category: clinical
+- term: Secret access key
+  definition: A key that is used with the access key ID to cryptographically sign programmatic AWS
+    requests. Signing a request identifies the sender and prevents the request from being altered.
+  category: authentication
+- term: Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2)
+  definition: A strain of coronavirus that causes COVID-19, the respiratory illness responsible for
+    the COVID-19 pandemic.
+  category: clinical
+- term: Sexually transmitted diseases (STD)
+  definition: Also known as sexually transmitted infections (STIs), are very common. Millions of
+    new infections occur every year in the United States. STDs pass from one person to another through
+    vaginal, oral, and anal sex.
+  category: clinical
+- term: Thrombotic microangiopathies (TMA)
+  definition: A clinical syndrome by the presence of hemolytic anemia (destruction of red blood cells),
+    low platelets, and organ damage due to the formation of microscopic blood clots in capillaries
+    and small arteries.
+  category: clinical
+- term: Uniform Resource Locator (URL)
+  definition: A Uniform Resource Locator, colloquially termed a web address, is a reference to a
+    web resource that specifies its location on a computer network and a mechanism for retrieving
+    it.
+  category: api
+- term: Webhook
+  definition: Webhooks allow one program to send data to another as soon as a particular event occurs.
+    They deliver real-time updates to your application as soon as the updates are available, and
+    are less resource intensive than APIs.
+  category: api

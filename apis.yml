@@ -1,18 +1,136 @@
 aid: letsgetchecked
 name: LetsGetChecked
-description: 'LetsGetChecked is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'LetsGetChecked (operating as LetsGetChecked powered by FuzeHealth) is
+  an Irish-American virtual care company that runs an end-to-end diagnostics and care
+  platform: it manufactures at-home sample-collection kits, operates its own CLIA-accredited
+  laboratories in the United States and Europe, and layers telehealth consultations,
+  clinical review and affiliate-pharmacy prescription delivery on top of the results.
+  Its Halo platform is a purpose-built EMR that exposes B2B REST APIs — the Orders
+  API (v1 and v2), the Results API and the Outreach API — plus event-driven webhook
+  notifications, so employers, health plans, providers, public-sector programs and
+  life-sciences partners can order pre-activated test kits, track kit fulfillment,
+  and retrieve laboratory results in JSON, HL7 or PDF form inside their own systems.'
 url: https://raw.githubusercontent.com/api-evangelist/letsgetchecked/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-04'
 modified: '2026-08-04'
+image: https://images.ctfassets.net/lnbo4srla2av/7bEYT5tJiJCJ62SSjGaWa7/3d7fba1af10b361826b727f988132700/og-image_1200x630.png
 tags:
 - Company
-apis: []
+- Health
+- Healthcare
+- Diagnostics
+- Laboratory
+- Telehealth
+- Medical Testing
+- Pharmacy
+- Orders
+- Results
+- Webhooks
+- HL7
+- LOINC
+apis:
+- aid: letsgetchecked:orders-api-v1
+  name: LetsGetChecked Orders API (Version 1)
+  description: 'Version 1 of the LetsGetChecked Orders API. Create a pre-activated
+    test-kit order against a client-supplied order identifier (PUT is documented as
+    idempotent), query order status from dispatch through delivery, registration,
+    arrival at the lab and results availability, retrieve the pre-registration questionnaire
+    for a test kit, and read replacement-kit linkage when a sample is unusable or a
+    kit is lost or damaged in transit.'
+  humanURL: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/orders/
+  tags:
+  - Orders
+  - Diagnostics
+  - Test Kits
+  - Fulfillment
+  - Healthcare
+  properties:
+  - type: Documentation
+    url: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/orders/
+  - type: APIReference
+    url: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/Version%201/orders_create/
+- aid: letsgetchecked:orders-api-v2
+  name: LetsGetChecked Orders API (Version 2)
+  description: 'Version 2 of the LetsGetChecked Orders API, documented September 2023.
+    Adds an order-item model with per-item identifiers and statuses, a PATCH endpoint
+    for cancelling an order item up to the KitArrivedAtLab status (processed asynchronously
+    and confirmed by webhook), a consolidated GET Order response replacing GET Order
+    Status, and replacementOrderItemId linkage for replacement kits.'
+  humanURL: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/orders/
+  tags:
+  - Orders
+  - Diagnostics
+  - Test Kits
+  - Cancellation
+  - Healthcare
+  properties:
+  - type: Documentation
+    url: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/orders/
+  - type: APIReference
+    url: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/Version%202/orders_create/
+- aid: letsgetchecked:results-api
+  name: LetsGetChecked Results API
+  description: 'Read laboratory results for test kits processed by the LetsGetChecked
+    lab. Retrieve a full result set for a barcode (with optional alpha code), fetch
+    just the result status, or pull the raw lab result. Results carry per-biomarker
+    detail — biomarker name, quantitative or qualitative or genetic kind, descriptor
+    bands, reference bounds, headline narrative, and LOINC coding — and are available
+    in JSON, HL7 or PDF representations.'
+  humanURL: https://docs.letsgetchecked.com/documentation/API%20Reference/Results%20API/results/
+  tags:
+  - Results
+  - Laboratory
+  - Biomarkers
+  - HL7
+  - LOINC
+  - Healthcare
+  properties:
+  - type: Documentation
+    url: https://docs.letsgetchecked.com/documentation/API%20Reference/Results%20API/results/
+  - type: APIReference
+    url: https://docs.letsgetchecked.com/documentation/API%20Reference/Results%20API/results_req/
+- aid: letsgetchecked:outreach-api
+  name: LetsGetChecked Outreach API
+  description: 'Retrieve and download the results letters LetsGetChecked generates
+    for patients and for a patient''s Primary Care Provider. List outreach notifications
+    for a client program with date filtering and X-Continuation-Token cursor paging,
+    fetch a single notification by test-kit barcode, walk a results-letters event feed
+    from a start event, and download the generated letter document by letter identifier.'
+  humanURL: https://docs.letsgetchecked.com/documentation/API%20Reference/Outreach%20API/outreach/
+  tags:
+  - Outreach
+  - Notifications
+  - Documents
+  - Patient Communications
+  - Healthcare
+  properties:
+  - type: Documentation
+    url: https://docs.letsgetchecked.com/documentation/API%20Reference/Outreach%20API/outreach/
+  - type: APIReference
+    url: https://docs.letsgetchecked.com/documentation/API%20Reference/Outreach%20API/notifications_get/
+- aid: letsgetchecked:api-notifications
+  name: LetsGetChecked API Notifications (Webhooks)
+  description: 'Event-driven webhook notifications delivered by POST to client-supplied
+    endpoints whenever an order, result or outreach resource changes. Payloads carry
+    a resource identifier, a callback URL back into the REST APIs, a type discriminator
+    and a UTC timestamp. Delivery is at-least-once and unordered, with a documented
+    retry ladder, and payloads can be signed with an LGC2-HMAC-SHA256 Authorization
+    header using a client-supplied base64 signing key.'
+  humanURL: https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/webhooks/
+  tags:
+  - Webhooks
+  - Events
+  - Notifications
+  - HMAC
+  - Healthcare
+  properties:
+  - type: Documentation
+    url: https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/webhooks/
+  - type: Webhooks
+    url: asyncapi/letsgetchecked-notifications-webhooks.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +138,75 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://forgeglobal.com/letsgetchecked_stock/
+  url: https://www.letsgetchecked.com/
+- type: DeveloperPortal
+  url: https://docs.letsgetchecked.com/
+- type: Documentation
+  url: https://docs.letsgetchecked.com/
+- type: APIReference
+  url: https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/api-operations/
+- type: GettingStarted
+  url: https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/integration-process/
+- type: Support
+  url: https://help.letsgetchecked.com/s/
+- type: Blog
+  url: https://www.letsgetchecked.com/articles/
+- type: BlogRSS
+  url: https://www.letsgetchecked.com/blog/feed/
+- type: GitHubOrganization
+  url: https://github.com/LetsGetChecked
+- type: SignUp
+  url: https://www.letsgetchecked.com/register/
+- type: Login
+  url: https://halo.letsgetchecked.com/
+- type: TermsOfService
+  url: https://www.letsgetchecked.com/terms-of-use/
+- type: PrivacyPolicy
+  url: https://www.letsgetchecked.com/privacy-policy/
+- type: ContactUs
+  url: https://www.letsgetchecked.com/contact-us/
+- type: ChangeLog
+  url: https://docs.letsgetchecked.com/documentation/release-notes/release_notes/
+- type: ChangeLog
+  url: changelog/letsgetchecked-changelog.yml
+- type: Vocabulary
+  url: vocabulary/letsgetchecked-glossary.yml
+- type: Authentication
+  url: authentication/letsgetchecked-authentication.yml
+- type: Conventions
+  url: conventions/letsgetchecked-conventions.yml
+- type: Idempotency
+  url: conventions/letsgetchecked-conventions.yml
+- type: ErrorCatalog
+  url: errors/letsgetchecked-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/letsgetchecked-lifecycle.yml
+- type: Conformance
+  url: conformance/letsgetchecked-conformance.yml
+- type: Compliance
+  url: https://trust.letsgetchecked.com/
+- type: TrustCenter
+  url: security/letsgetchecked-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/letsgetchecked-vulnerability-disclosure.yml
+- type: Security
+  url: https://www.letsgetchecked.com/security.txt
+- type: SecurityTxt
+  url: well-known/letsgetchecked-security.txt
+- type: WellKnown
+  url: well-known/letsgetchecked-well-known.yml
+- type: DomainSecurity
+  url: security/letsgetchecked-domain-security.yml
+- type: Webhooks
+  url: asyncapi/letsgetchecked-notifications-webhooks.yml
+- type: Sandbox
+  url: sandbox/letsgetchecked-sandbox.yml
+- type: DataModel
+  url: data-model/letsgetchecked-data-model.yml
+- type: LLMsTxt
+  url: llms/letsgetchecked-llms.txt
+x-enrichment:
+  date: '2026-08-04'
+  status: enriched
+  artifacts_added: 17
+  pass: local-v1

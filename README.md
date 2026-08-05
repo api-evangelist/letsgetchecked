@@ -42,5 +42,44 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-LetsGetChecked is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/letsgetchecked_stock/
+LetsGetChecked (operating as LetsGetChecked powered by FuzeHealth) runs an end-to-end virtual
+care and diagnostics platform: it manufactures at-home sample-collection kits, operates its own
+accredited laboratories in the United States and Europe, and layers telehealth, clinical review
+and affiliate-pharmacy prescription delivery on top of the results. Its Halo platform exposes
+B2B REST APIs — Orders (v1 and v2), Results and Outreach — plus event-driven webhook
+notifications, so employers, health plans, providers, public-sector programs and life-sciences
+partners can order pre-activated test kits, track fulfillment, and retrieve laboratory results
+in JSON, HL7 or PDF inside their own systems.
+
+- Website: https://www.letsgetchecked.com/
+- Developer documentation: https://docs.letsgetchecked.com/
+- Trust centre: https://trust.letsgetchecked.com/
+- Report a vulnerability: https://www.letsgetchecked.com/security.txt
+
+## What this profile found
+
+The API surface is **documented but partner-gated**. LetsGetChecked publishes a full prose API
+reference — authentication, four API surfaces, a webhook catalogue, an error-code table, a
+37-term glossary and dated release notes — but no machine-readable contract of any kind, and no
+API hostname. Every documented endpoint is templated as `{LGC-API}`; the host, credentials and
+staging access are issued privately during onboarding.
+
+Confirmed absent after direct probing on 2026-08-04: no OpenAPI or Swagger (checked the docs
+host root, `/openapi.json`, `/openapi.yaml`, `/swagger.json`, the GitHub org, and the Halo
+host), no AsyncAPI, no GraphQL, no gRPC, no MCP server, no A2A agent card, no client libraries
+on any public package registry, no CLI, no Postman collection, no status page and no SLA.
+
+Two probe results are recorded specifically so a later pass does not repeat the mistake:
+`halo.letsgetchecked.com` and `trust.letsgetchecked.com` answer **HTTP 200 with an HTML
+application shell for every `/.well-known/*` path** — those are SPA catch-alls, not documents.
+And the trust centre is a shared Conveyor page that embeds other vendors' certification lists;
+LetsGetChecked's own record claims **GDPR, HITRUST, NIST and ISO 13485**, and does *not* claim
+SOC 2 or ISO 27001.
+
+Three defects worth reporting back to the provider:
+
+1. The Docusaurus docs site is deployed with `url`/`baseUrl` unset — `sitemap.xml` emits every
+   entry as `http://localhost/...`, so crawlers and agents following it resolve nothing.
+2. `security.txt` is served only from the legacy `/security.txt` path, not the RFC 9116
+   `/.well-known/security.txt`, and its `Expires` value (2024-03-01) has passed.
+3. No release note has been published since 14 September 2023.

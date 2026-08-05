@@ -1,0 +1,194 @@
+generated: '2026-08-04'
+method: searched
+source: https://docs.letsgetchecked.com/
+docs: https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/api-operations/
+
+# Standards and regimes asserted against the LetsGetChecked B2B API surface. There is no
+# OpenAPI to derive from, so every "conforms: true" below is anchored to a published
+# statement or an observed artifact, and everything unverifiable is recorded as unknown
+# rather than guessed.
+
+standards:
+- id: rest
+  conforms: true
+  evidence: 'Documentation states the APIs "conform to the constraints of REST
+    (representational state transfer) architectural style".'
+  source: https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/authentication-flow/
+
+- id: oauth2
+  conforms: true
+  evidence: 'OAuth 2.0 client_credentials grant against {LGC-API}/oauth2/token, returning a
+    JWT access token used as a bearer token.'
+  source: https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/authentication-flow/
+
+- id: rfc6749-client-credentials
+  conforms: true
+  evidence: 'client_credentials grant type with access key ID + secret access key presented
+    via HTTP Basic, form-encoded request.'
+
+- id: rfc7519-jwt
+  conforms: true
+  evidence: 'Access token is returned "in the form of a JSON Web Token (JWT)".'
+
+- id: oidc
+  conforms: false
+  evidence: 'No OpenID Connect flow is documented for the B2B API. The only
+    openid-configuration on any LetsGetChecked host is the stock Salesforce Experience
+    Cloud IdP behind help.letsgetchecked.com, which is unrelated to the API.'
+  source: well-known/letsgetchecked-well-known.yml
+
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: false
+  evidence: /.well-known/oauth-authorization-server returns 404 on every host.
+
+- id: rfc9116-security-txt
+  conforms: partial
+  evidence: 'A valid security.txt with Contact, Expires, Preferred-Languages and Policy is
+    served — but from /security.txt, not the required /.well-known/security.txt, and its
+    Expires value (2024-03-01) has passed.'
+  source: security/letsgetchecked-vulnerability-disclosure.yml
+
+- id: rfc2104-hmac
+  conforms: true
+  evidence: 'Webhook payload signing uses HMAC-SHA256 under the LGC2-HMAC-SHA256
+    Authorization scheme; the docs cite RFC 2104 directly.'
+  source: https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/security/
+
+- id: rfc9457-problem-details
+  conforms: unknown
+  evidence: 'The error page claims errors "include the Problem-Detail payload where
+    appropriate", but neither the RFC, the application/problem+json media type, nor any
+    problem type URI or example document is published.'
+  source: errors/letsgetchecked-problem-types.yml
+
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header support and no deprecation policy is published.
+
+- id: openapi
+  conforms: false
+  evidence: 'No OpenAPI or Swagger document exists at any probed location — docs host root,
+    /openapi.json, /openapi.yaml, /swagger.json, the GitHub org, or the Halo host (which
+    returns an SPA HTML shell for every path).'
+
+- id: asyncapi
+  conforms: false
+  evidence: 'No AsyncAPI document. The webhook surface is documented in prose only — see
+    asyncapi/letsgetchecked-notifications-webhooks.yml.'
+
+- id: hl7-v2
+  conforms: true
+  evidence: 'Results are available in HL7 format alongside JSON and PDF. The developer
+    glossary defines Health Level 7 and the OBX segment used to transmit a single
+    observation.'
+  source: https://docs.letsgetchecked.com/documentation/API%20Reference/Results%20API/results/
+
+- id: loinc
+  conforms: true
+  evidence: 'GET Results returns a coding element carrying LOINC codes associated with the
+    biomarkers of specific test kits (added 19 August 2022).'
+  source: https://docs.letsgetchecked.com/documentation/API%20Reference/Results%20API/results_req/
+
+- id: fhir
+  conforms: false
+  evidence: 'No FHIR resources, endpoints, or CapabilityStatement are published. Result
+    interchange is HL7 v2 / JSON / PDF, not FHIR.'
+
+- id: npi
+  conforms: true
+  evidence: 'The National Provider Identifier is defined in the glossary and physician
+    information is carried on orders and results.'
+
+- id: iso8601
+  conforms: partial
+  evidence: 'Timestamps are ISO 8601 UTC. Query date parameters are described as ISO 8601
+    UTC but the published samples use dd/MM/yyyy (startDate=01/01/2000).'
+
+- id: iso3166-1-alpha-2
+  conforms: true
+  evidence: 'countryIsoAlpha2 replaced countryName in the Address structure on 1 April 2022.'
+
+- id: json
+  conforms: true
+  evidence: application/json request and response bodies throughout.
+
+- id: pagination
+  conforms: true
+  evidence: 'Continuation-token cursor paging with an X-Continuation-Token response header
+    and a 25-item page cap on the Outreach API.'
+  source: conventions/letsgetchecked-conventions.yml
+
+- id: idempotency
+  conforms: true
+  evidence: 'Order creation is a PUT against a client-supplied clientOrderId and is
+    documented as idempotent with replay-safe semantics. Consumers are also instructed to
+    make webhook processing idempotent.'
+  source: conventions/letsgetchecked-conventions.yml
+
+- id: json-api
+  conforms: false
+- id: odata
+  conforms: false
+- id: scim
+  conforms: false
+- id: graphql
+  conforms: false
+- id: grpc
+  conforms: false
+- id: mcp
+  conforms: false
+  evidence: No MCP server is published or referenced.
+- id: a2a
+  conforms: false
+  evidence: 'No agent card at /.well-known/agent-card.json or /.well-known/agent.json on
+    any host. The Halo and trust hosts return HTML catch-alls, not cards.'
+
+regimes:
+- id: hipaa
+  status: subject
+  evidence: 'The API surface carries Protected Health Information; the developer glossary
+    defines PHI under HIPAA and the webhook security page justifies HMAC signing as
+    preventing attackers from directly accessing the service to obtain PHI. HIPAA is NOT
+    listed as a certification on the company trust centre.'
+  source: security/letsgetchecked-trust-center.yml
+
+- id: clia
+  status: subject
+  evidence: 'The glossary defines the Clinical Laboratory Improvement Amendments, and the
+    company operates its own accredited laboratories performing clinical testing on humans
+    in the United States.'
+
+- id: gdpr
+  status: claimed
+  evidence: Listed on the company trust centre certification record.
+  source: https://trust.letsgetchecked.com/
+
+- id: hitrust
+  status: claimed
+  evidence: Listed on the company trust centre certification record.
+  source: https://trust.letsgetchecked.com/
+
+- id: nist
+  status: claimed
+  evidence: Listed on the company trust centre certification record.
+  source: https://trust.letsgetchecked.com/
+
+- id: iso-13485
+  status: claimed
+  evidence: 'Listed on the company trust centre certification record — the medical-device
+    quality-management standard, consistent with manufacturing sample-collection kits.'
+  source: https://trust.letsgetchecked.com/
+
+- id: soc2-type-2
+  status: not-claimed
+  evidence: 'Absent from the vendor''s own trust-centre certification list. Conveyor''s
+    SOC 2 trust indicator on this profile scores "unknown".'
+
+- id: iso-27001
+  status: not-claimed
+  evidence: Absent from the vendor's own trust-centre certification list.
+
+- id: washington-my-health-my-data
+  status: subject
+  evidence: 'The company publishes a Washington Consumer Health Data Privacy Policy.'
+  source: https://www.letsgetchecked.com/
