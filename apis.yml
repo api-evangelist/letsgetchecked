@@ -13,7 +13,7 @@ description: 'LetsGetChecked (operating as LetsGetChecked powered by FuzeHealth)
 url: https://raw.githubusercontent.com/api-evangelist/letsgetchecked/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-08-04'
 modified: '2026-08-04'
 image: https://images.ctfassets.net/lnbo4srla2av/7bEYT5tJiJCJ62SSjGaWa7/3d7fba1af10b361826b727f988132700/og-image_1200x630.png
