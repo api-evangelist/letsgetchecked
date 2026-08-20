@@ -26,6 +26,20 @@ tags:
 - Telehealth
 - Medical Testing
 - Pharmacy
+- Order
+- Results
+- Webhook
+- HL7
+- LOINC
+tags_raw:
+- Company
+- Health
+- Healthcare
+- Diagnostics
+- Laboratory
+- Telehealth
+- Medical Testing
+- Pharmacy
 - Orders
 - Results
 - Webhooks
@@ -42,6 +56,12 @@ apis:
     kit is lost or damaged in transit.'
   humanURL: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/orders/
   tags:
+  - Order
+  - Diagnostics
+  - Test Kits
+  - Fulfillment
+  - Healthcare
+  tags_raw:
   - Orders
   - Diagnostics
   - Test Kits
@@ -61,6 +81,12 @@ apis:
     Status, and replacementOrderItemId linkage for replacement kits.'
   humanURL: https://docs.letsgetchecked.com/documentation/API%20Reference/Orders%20API/orders/
   tags:
+  - Order
+  - Diagnostics
+  - Test Kits
+  - Cancellation
+  - Healthcare
+  tags_raw:
   - Orders
   - Diagnostics
   - Test Kits
@@ -102,6 +128,12 @@ apis:
   humanURL: https://docs.letsgetchecked.com/documentation/API%20Reference/Outreach%20API/outreach/
   tags:
   - Outreach
+  - Notification
+  - Documents
+  - Patient Communications
+  - Healthcare
+  tags_raw:
+  - Outreach
   - Notifications
   - Documents
   - Patient Communications
@@ -121,6 +153,12 @@ apis:
     header using a client-supplied base64 signing key.'
   humanURL: https://docs.letsgetchecked.com/documentation/API%20Reference/API%20Notifications/webhooks/
   tags:
+  - Webhook
+  - Event
+  - Notification
+  - HMAC
+  - Healthcare
+  tags_raw:
   - Webhooks
   - Events
   - Notifications
