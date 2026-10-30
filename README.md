@@ -64,44 +64,110 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-LetsGetChecked (operating as LetsGetChecked powered by FuzeHealth) runs an end-to-end virtual
-care and diagnostics platform: it manufactures at-home sample-collection kits, operates its own
-accredited laboratories in the United States and Europe, and layers telehealth, clinical review
-and affiliate-pharmacy prescription delivery on top of the results. Its Halo platform exposes
-B2B REST APIs — Orders (v1 and v2), Results and Outreach — plus event-driven webhook
-notifications, so employers, health plans, providers, public-sector programs and life-sciences
-partners can order pre-activated test kits, track fulfillment, and retrieve laboratory results
-in JSON, HL7 or PDF inside their own systems.
+LetsGetChecked (operating as LetsGetChecked powered by FuzeHealth) is an Irish-American virtual care company that runs an end-to-end diagnostics and care platform: it manufactures at-home sample-collection kits, operates its own CLIA-accredited laboratories in the United States and Europe, and layers telehealth consultations, clinical review and affiliate-pharmacy prescription delivery on top of the results. Its Halo platform is a purpose-built EMR that exposes B2B REST APIs — the Orders API (v1 and v2), the Results API and the Outreach API — plus event-driven webhook notifications, so employers, health plans, providers, public-sector programs and life-sciences partners can order pre-activated test kits, track kit fulfillment, and retrieve laboratory results in JSON, HL7 or PDF form inside their own systems.
 
-- Website: https://www.letsgetchecked.com/
-- Developer documentation: https://docs.letsgetchecked.com/
-- Trust centre: https://trust.letsgetchecked.com/
-- Report a vulnerability: https://www.letsgetchecked.com/security.txt
+**Areas:** Company · Health · Healthcare · Diagnostics · Laboratory · Telehealth · Medical Testing · Pharmacy · Order · Results · Webhook · HL7
 
-## What this profile found
+## LetsGetChecked on APIs.io
 
-The API surface is **documented but partner-gated**. LetsGetChecked publishes a full prose API
-reference — authentication, four API surfaces, a webhook catalogue, an error-code table, a
-37-term glossary and dated release notes — but no machine-readable contract of any kind, and no
-API hostname. Every documented endpoint is templated as `{LGC-API}`; the host, credentials and
-staging access are issued privately during onboarding.
+Everything profiled for LetsGetChecked is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/letsgetchecked/](https://apis.io/providers/letsgetchecked/)** — or go straight to one of the APIs or properties below.
 
-Confirmed absent after direct probing on 2026-08-04: no OpenAPI or Swagger (checked the docs
-host root, `/openapi.json`, `/openapi.yaml`, `/swagger.json`, the GitHub org, and the Halo
-host), no AsyncAPI, no GraphQL, no gRPC, no MCP server, no A2A agent card, no client libraries
-on any public package registry, no CLI, no Postman collection, no status page and no SLA.
+### APIs (5)
 
-Two probe results are recorded specifically so a later pass does not repeat the mistake:
-`halo.letsgetchecked.com` and `trust.letsgetchecked.com` answer **HTTP 200 with an HTML
-application shell for every `/.well-known/*` path** — those are SPA catch-alls, not documents.
-And the trust centre is a shared Conveyor page that embeds other vendors' certification lists;
-LetsGetChecked's own record claims **GDPR, HITRUST, NIST and ISO 13485**, and does *not* claim
-SOC 2 or ISO 27001.
+- [LetsGetChecked Orders API (Version 1)](https://apis.io/apis/letsgetchecked/orders-api-v1/) — Version 1 of the LetsGetChecked Orders API. Create a pre-activated test-kit order against a client-supplied order identifier (PUT is documented as…
+- [LetsGetChecked Orders API (Version 2)](https://apis.io/apis/letsgetchecked/orders-api-v2/) — Version 2 of the LetsGetChecked Orders API, documented September 2023. Adds an order-item model with per-item identifiers and statuses, a PATCH endpoint for…
+- [LetsGetChecked Results API](https://apis.io/apis/letsgetchecked/results-api/) — Read laboratory results for test kits processed by the LetsGetChecked lab. Retrieve a full result set for a barcode (with optional alpha code), fetch just…
+- [LetsGetChecked Outreach API](https://apis.io/apis/letsgetchecked/outreach-api/) — Retrieve and download the results letters LetsGetChecked generates for patients and for a patient's Primary Care Provider. List outreach notifications for a…
+- [LetsGetChecked API Notifications (Webhooks)](https://apis.io/apis/letsgetchecked/api-notifications/) — Event-driven webhook notifications delivered by POST to client-supplied endpoints whenever an order, result or outreach resource changes. Payloads carry a…
 
-Three defects worth reporting back to the provider:
+### Published properties
 
-1. The Docusaurus docs site is deployed with `url`/`baseUrl` unset — `sitemap.xml` emits every
-   entry as `http://localhost/...`, so crawlers and agents following it resolve nothing.
-2. `security.txt` is served only from the legacy `/security.txt` path, not the RFC 9116
-   `/.well-known/security.txt`, and its `Expires` value (2024-03-01) has passed.
-3. No release note has been published since 14 September 2023.
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Letsgetchecked Notifications Webhooks](https://apis.io/asyncapis/letsgetchecked/letsgetchecked-notifications-webhooks/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Letsgetchecked Authentication](https://apis.io/security/letsgetchecked/letsgetchecked-authentication/)
+- [Letsgetchecked Domain Security](https://apis.io/security/letsgetchecked/letsgetchecked-domain-security/)
+- [Letsgetchecked Trust Center](https://apis.io/security/letsgetchecked/letsgetchecked-trust-center/)
+- [Letsgetchecked Vulnerability Disclosure](https://apis.io/security/letsgetchecked/letsgetchecked-vulnerability-disclosure/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.letsgetchecked.com/)
+- [Documentation](https://docs.letsgetchecked.com/)
+- [Getting started](https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/integration-process/)
+- [API reference](https://docs.letsgetchecked.com/documentation/API%20Reference/Getting%20Started/api-operations/)
+- [Sign up](https://www.letsgetchecked.com/register/)
+- [Support](https://help.letsgetchecked.com/s/)
+- [Changelog](https://docs.letsgetchecked.com/documentation/release-notes/release_notes/)
+- [Blog](https://www.letsgetchecked.com/articles/)
+- [Security](https://www.letsgetchecked.com/security.txt)
+- [Compliance](https://trust.letsgetchecked.com/)
+- [Terms of service](https://www.letsgetchecked.com/terms-of-use/)
+- [Privacy policy](https://www.letsgetchecked.com/privacy-policy/)
+- [GitHub](https://github.com/LetsGetChecked)
+
+## API Evangelist rating
+
+**Kin Score 48.1** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 62.5 |
+| Contract quality | 39.0 |
+| Contract governance | 33.3 |
+| Operational transparency | 31.6 |
+| Developer ergonomics | 64.3 |
+| Access clarity | 42.1 |
+
+**Agent readiness 34.2** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | served (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | — |
+| Event Surface Described | yes |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 30.5** — Health
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/letsgetchecked/](https://apis.io/providers/letsgetchecked/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for LetsGetChecked: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/letsgetchecked/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
